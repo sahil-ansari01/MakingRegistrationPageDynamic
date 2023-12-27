@@ -3,6 +3,11 @@ const posts = [
     { title: 'Post two', body: 'This is post two'}
 ];
 
+const user = {
+    name : 'sahil',
+    lastActivityTime : 'Today'
+}
+
 function getPosts() {
     setTimeout(() => {
         let output = '';
@@ -20,6 +25,7 @@ function createPost(post) {
             posts.push(post);
             
             const error = false;
+            updateLastUserActivityTime();
 
             if (!error) {
                 resolve();
@@ -43,6 +49,16 @@ function deletePost() {
     });
 }
 
+function updateLastUserActivityTime() {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            user.lastActivityTime = new Date().getTime();
+            resolve(user.lastActivityTime);
+        }, 1000);
+
+    })
+}
+
 createPost({title: 'Post three', body: 'This is post three'})
 .then( () => {
     getPosts()
@@ -50,3 +66,16 @@ createPost({title: 'Post three', body: 'This is post three'})
         getPosts();
     })
 })
+
+function userUpdatePost() {
+    Promise.all([createPost({ title: 'Post five', body: 'This is post five' }), updateLastUserActivityTime()])
+        .then(([createPostResolves, updateLastUserActivityTimeResolves]) => {
+            console.log(createPostResolves);
+            console.log(updateLastUserActivityTimeResolves);
+
+            deletePost().then(() => {
+                getPosts();
+            });
+        })
+        .catch(err => console.log(err));
+}
