@@ -14,17 +14,39 @@ function getPosts() {
     }, 1000)
 }
 
-function createPost(post, callback) {
-    setTimeout(() => {
-        posts.push(post);
-        callback();
-    }, 2000)
+function createPost(post) {
+    return new Promise((resolve, reject) => {
+            setTimeout(() => {
+            posts.push(post);
+            
+            const error = false;
+
+            if (!error) {
+                resolve();
+            } else {
+                reject('ERROR : Something went wrong')
+            }
+        }, 2000);
+    });
 }
 
-function create4thPost(post4, callback) {
-    setTimeout(() => {
-        callback(post4, getPosts)
+
+function deletePost() {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            if (posts.value != 0) {
+                resolve(posts.pop());
+            } else {
+                reject('Array is empty now!');
+            }
+        });
+    });
+}
+
+createPost({title: 'Post three', body: 'This is post three'})
+.then( () => {
+    getPosts()
+    deletePost().then( () => {
+        getPosts();
     })
-}
-
-createPost({title: 'Post three', body: 'This is post three'}, getPosts)
+})
